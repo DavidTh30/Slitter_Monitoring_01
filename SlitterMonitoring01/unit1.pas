@@ -8,7 +8,8 @@ uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls, StdCtrls,
   ExtCtrls, Menus, ECAccordion, ECEditBtns, ECSwitch, tcp_udpport,
   ISOTCPDriver, PLCBlock, PLCBlockElement, TagBit, HMIEdit, strutils,
-  TAGraph, TASources, TASeries, TATransformations, Math, windows, TAChartUtils;
+  TAGraph, TASources, TASeries, TATransformations, Math, windows, TAChartUtils,
+  Process, WinSock, JwaIpHlpAPI, JwaIpRtrMib;
 
 function DwmGetWindowAttribute(hwnd: HWND; dwAttribute: DWORD; pvAttribute: PVOID; cbAttribute: DWORD): HRESULT; stdcall; external 'dwmapi.dll';
 
@@ -23,6 +24,12 @@ type
     Button2: TButton;
     Button3: TButton;
     Button4: TButton;
+    ButtonComputerName: TButton;
+    ButtonGetIPAddress: TButton;
+    ButtonClear: TButton;
+    ButtonIpconfig: TButton;
+    ButtonIpconfigAl: TButton;
+    ButtonPing: TButton;
     Chart2LineSeries1: TLineSeries;
     Chart6: TChart;
     Chart6LineSeries1: TLineSeries;
@@ -166,6 +173,7 @@ type
     Edit2: TEdit;
     Edit3: TEdit;
     Edit4: TEdit;
+    Edit5: TEdit;
     HMIEdit1: THMIEdit;
     HMIEdit10: THMIEdit;
     HMIEdit11: THMIEdit;
@@ -260,6 +268,7 @@ type
     Label_Source9: TLabel;
     ListChartSource5: TListChartSource;
     Memo1: TMemo;
+    Memo2: TMemo;
     MenuItem1: TMenuItem;
     PageControl1: TPageControl;
     Shape1: TShape;
@@ -294,6 +303,12 @@ type
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
+    procedure ButtonClearClick(Sender: TObject);
+    procedure ButtonComputerNameClick(Sender: TObject);
+    procedure ButtonGetIPAddressClick(Sender: TObject);
+    procedure ButtonIpconfigAlClick(Sender: TObject);
+    procedure ButtonIpconfigClick(Sender: TObject);
+    procedure ButtonPingClick(Sender: TObject);
     procedure ChartForceManualClick(Sender: TObject);
     procedure ChartRefreshMenuClick(Sender: TObject);
     procedure ChartZoomOutMenuClick(Sender: TObject);
@@ -319,6 +334,7 @@ type
     procedure Edit2EditingDone(Sender: TObject);
     procedure Edit3EditingDone(Sender: TObject);
     procedure Edit4EditingDone(Sender: TObject);
+    procedure Edit5EditingDone(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure Image2Click(Sender: TObject);
@@ -333,6 +349,8 @@ type
     Function CheckDirectory(C_DNAME: string;Debug_:TMemo):boolean; //True=Error
     procedure ScreenshotToFile(const Filename: string; Monitor_: integer);
     function get_ss_of(window: hwnd; var bmp: graphics.TBitmap): integer;
+    procedure Log(const s : string);
+    procedure Log(Const Fmt : String; const Args : Array of const);
   end;
 
 var
@@ -364,6 +382,16 @@ implementation
 {$R *.lfm}
 
 { TForm1 }
+
+procedure TForm1.Log(const s : string);
+begin
+  Memo2.Lines.Add(s);
+end;
+
+procedure TForm1.Log(const Fmt : String; const Args : array of const);
+begin
+  Log(Format(Fmt,Args));
+end;
 
 function TForm1.get_ss_of(window: hwnd; var bmp: graphics.TBitmap): integer;
 var
@@ -601,6 +629,275 @@ end;
 procedure TForm1.Button4Click(Sender: TObject);
 begin
   RunChart:=not RunChart;
+end;
+
+procedure TForm1.ButtonClearClick(Sender: TObject);
+begin
+  memo2.Clear;
+end;
+
+procedure TForm1.ButtonComputerNameClick(Sender: TObject);
+var
+ComputerName: Array [0 .. 256] of char;
+Size: DWORD;
+begin
+     Size := 256;
+     GetComputerName(ComputerName, Size);
+     Log('>> %s',[ComputerName]);
+end;
+
+procedure TForm1.ButtonGetIPAddressClick(Sender: TObject);
+var
+  Ret: DWord;
+  Table: PMib_IPAddrTable;
+  TableSize: ULong;
+  i: Integer;
+  //Row: PMib_IPAddrRow;
+  Addr: IN_ADDR;
+begin
+  // We begin by assuming there's just one entry, so we allocate space
+  // for that one
+  TableSize := SizeOf(Table^);
+  GetMem(Table, TableSize);
+  try
+    // Request a list of IP addresses, unsorted
+    Ret := GetIpAddrTable(Table, TableSize, False);
+    case Ret of
+      No_Error: ; // No error. Continue at the end of the case statement
+      Error_Insufficient_Buffer:
+      begin
+        // Oops. Space for just one entry wasn't enough. Allocate more.
+        ReallocMem(Table, TableSize);
+        Ret := GetIpAddrTable(Table, TableSize, False);
+        if Ret <> No_Error then
+        begin
+          // Function expects signed value, but Ret is unsigned. Type
+          // cast to avoid range-check error, however unlikely.
+          RaiseLastOSError(Integer(Ret));
+        end;
+      end;
+    else
+      RaiseLastOSError(Integer(Ret));
+    end;
+  //writeln(Table.dwNumEntries, ' entries:');
+
+  if Table^.dwNumEntries > 0 then
+  begin
+    //Row := @Table^.Table[0];
+    //for i := 0 to Pred(Table^.dwNumEntries) do
+    //begin
+    //  //writeln(inet_ntoa(in_addr(Row.dwAddr)));
+    //  log(inet_ntoa(in_addr(Row^.dwAddr)));
+    //  Inc(Row);
+    //end;
+
+    for i := 0 to Table^.dwNumEntries-1 do
+    begin
+      // Convert ADDR to String and add to IPList
+      Addr.S_addr := Table^.table[i].dwAddr;
+      // Prevent implicit string conversion warning in D2009 by explicit cast to string
+      log(inet_ntoa(Addr));
+    end;
+
+  end;
+  finally
+    FreeMem(Table);
+  end;
+end;
+
+procedure TForm1.ButtonIpconfigAlClick(Sender: TObject);
+const
+  BUF_SIZE = 2048; // Buffer size for reading the output in chunks
+
+var
+  AProcess     : TProcess;
+  OutputStream : TStream;
+  BytesRead    : longint;
+  Buffer       : array[1..BUF_SIZE] of byte;
+begin
+  // Set up the process; as an example a recursive directory search is used
+  // because that will usually result in a lot of data.
+  AProcess := TProcess.Create(nil);
+
+  // The commands for Windows and *nix are different hence the $IFDEFs
+  {$IFDEF Windows}
+    // In Windows the dir command cannot be used directly because it's a build-in
+    // shell command. Therefore cmd.exe and the extra parameters are needed.
+    AProcess.Executable := 'c:\windows\system32\cmd.exe';
+    AProcess.Parameters.Add('/c');
+    AProcess.Parameters.Add('ipconfig /all');     //'dir /s c:\windows' //'dir /w'
+  {$ENDIF Windows}
+
+  // Process option poUsePipes has to be used so the output can be captured.
+  // Process option poWaitOnExit can not be used because that would block
+  // this program, preventing it from reading the output data of the process.
+  AProcess.Options := [poUsePipes];
+
+  AProcess.ShowWindow:=swoHide;   //swoShow   //swoHide
+  Log('>> %s',['Please wait']);
+
+  // Start the process (run the dir/ls command)
+  AProcess.Execute;
+
+  // Create a stream object to store the generated output in. This could
+  // also be a file stream to directly save the output to disk.
+  OutputStream := TMemoryStream.Create;
+
+  // All generated output from AProcess is read in a loop until no more data is available
+  repeat
+    // Get the new data from the process to a maximum of the buffer size that was allocated.
+    // Note that all read(...) calls will block except for the last one, which returns 0 (zero).
+    BytesRead := AProcess.Output.Read(Buffer, BUF_SIZE);
+
+    // Add the bytes that were read to the stream for later usage
+    OutputStream.Write(Buffer, BytesRead)
+
+  until BytesRead = 0;  // Stop if no more data is available
+
+  // The process has finished so it can be cleaned up
+  AProcess.Free;
+
+  // Or the data can be shown on screen
+  with TStringList.Create do
+  begin
+    OutputStream.Position := 0; // Required to make sure all data is copied from the start
+    LoadFromStream(OutputStream);
+    Log('>> %s',[Text]);
+    Free
+  end;
+
+  // Clean up
+  OutputStream.Free;
+end;
+
+procedure TForm1.ButtonIpconfigClick(Sender: TObject);
+const
+  BUF_SIZE = 2048; // Buffer size for reading the output in chunks
+
+var
+  AProcess     : TProcess;
+  OutputStream : TStream;
+  BytesRead    : longint;
+  Buffer       : array[1..BUF_SIZE] of byte;
+begin
+  // Set up the process; as an example a recursive directory search is used
+  // because that will usually result in a lot of data.
+  AProcess := TProcess.Create(nil);
+
+  // The commands for Windows and *nix are different hence the $IFDEFs
+  {$IFDEF Windows}
+    // In Windows the dir command cannot be used directly because it's a build-in
+    // shell command. Therefore cmd.exe and the extra parameters are needed.
+    AProcess.Executable := 'c:\windows\system32\cmd.exe';
+    AProcess.Parameters.Add('/c');
+    AProcess.Parameters.Add('ipconfig');     //'dir /s c:\windows' //'dir /w'
+  {$ENDIF Windows}
+
+  // Process option poUsePipes has to be used so the output can be captured.
+  // Process option poWaitOnExit can not be used because that would block
+  // this program, preventing it from reading the output data of the process.
+  AProcess.Options := [poUsePipes];
+
+  AProcess.ShowWindow:=swoHide;   //swoShow   //swoHide
+  Log('>> %s',['Please wait']);
+
+  // Start the process (run the dir/ls command)
+  AProcess.Execute;
+
+  // Create a stream object to store the generated output in. This could
+  // also be a file stream to directly save the output to disk.
+  OutputStream := TMemoryStream.Create;
+
+  // All generated output from AProcess is read in a loop until no more data is available
+  repeat
+    // Get the new data from the process to a maximum of the buffer size that was allocated.
+    // Note that all read(...) calls will block except for the last one, which returns 0 (zero).
+    BytesRead := AProcess.Output.Read(Buffer, BUF_SIZE);
+
+    // Add the bytes that were read to the stream for later usage
+    OutputStream.Write(Buffer, BytesRead)
+
+  until BytesRead = 0;  // Stop if no more data is available
+
+  // The process has finished so it can be cleaned up
+  AProcess.Free;
+
+  // Or the data can be shown on screen
+  with TStringList.Create do
+  begin
+    OutputStream.Position := 0; // Required to make sure all data is copied from the start
+    LoadFromStream(OutputStream);
+    Log('>> %s',[Text]);
+    Free
+  end;
+
+  // Clean up
+  OutputStream.Free;
+end;
+
+procedure TForm1.ButtonPingClick(Sender: TObject);
+const
+  BUF_SIZE = 2048; // Buffer size for reading the output in chunks
+
+var
+  AProcess     : TProcess;
+  OutputStream : TStream;
+  BytesRead    : longint;
+  Buffer       : array[1..BUF_SIZE] of byte;
+begin
+  // Set up the process; as an example a recursive directory search is used
+  // because that will usually result in a lot of data.
+  AProcess := TProcess.Create(nil);
+
+  // The commands for Windows and *nix are different hence the $IFDEFs
+  {$IFDEF Windows}
+    // In Windows the dir command cannot be used directly because it's a build-in
+    // shell command. Therefore cmd.exe and the extra parameters are needed.
+    AProcess.Executable := 'c:\windows\system32\cmd.exe';
+    AProcess.Parameters.Add('/c');
+    AProcess.Parameters.Add('ping '+Edit5.Caption);     //'dir /s c:\windows' //'dir /w'
+  {$ENDIF Windows}
+
+  // Process option poUsePipes has to be used so the output can be captured.
+  // Process option poWaitOnExit can not be used because that would block
+  // this program, preventing it from reading the output data of the process.
+  AProcess.Options := [poUsePipes];
+
+  AProcess.ShowWindow:=swoHide;   //swoShow   //swoHide
+  Log('>> %s',['Please wait']);
+
+  // Start the process (run the dir/ls command)
+  AProcess.Execute;
+
+  // Create a stream object to store the generated output in. This could
+  // also be a file stream to directly save the output to disk.
+  OutputStream := TMemoryStream.Create;
+
+  // All generated output from AProcess is read in a loop until no more data is available
+  repeat
+    // Get the new data from the process to a maximum of the buffer size that was allocated.
+    // Note that all read(...) calls will block except for the last one, which returns 0 (zero).
+    BytesRead := AProcess.Output.Read(Buffer, BUF_SIZE);
+
+    // Add the bytes that were read to the stream for later usage
+    OutputStream.Write(Buffer, BytesRead)
+
+  until BytesRead = 0;  // Stop if no more data is available
+
+  // The process has finished so it can be cleaned up
+  AProcess.Free;
+
+  // Or the data can be shown on screen
+  with TStringList.Create do
+  begin
+    OutputStream.Position := 0; // Required to make sure all data is copied from the start
+    LoadFromStream(OutputStream);
+    Log('>> %s',[Text]);
+    Free
+  end;
+
+  // Clean up
+  OutputStream.Free;
 end;
 
 procedure TForm1.ChartForceManualClick(Sender: TObject);
@@ -1043,7 +1340,7 @@ begin
     i:=StrToInt(Edit2.Caption);
   except
     On E : EConvertError do
-      i:=502;
+      i:=102;
   end;
   Edit2.Caption:= IntToStr(i);
   TCP_UDPPort1.Port:=i;
@@ -1089,6 +1386,11 @@ begin
       ChartForceManual.Extent.YMin := i;
       ChartForceManual.ExtentSizeLimit.YMin:= i;
     end;
+end;
+
+procedure TForm1.Edit5EditingDone(Sender: TObject);
+begin
+  Edit5.Caption:=RepairIPAddress(Edit5.Caption);
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);

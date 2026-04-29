@@ -3,7 +3,7 @@ object Form1: TForm1
   Height = 571
   Top = 127
   Width = 995
-  Caption = 'SlitterMonitoring01 24042026'
+  Caption = 'SlitterMonitoring01 29042026'
   ClientHeight = 571
   ClientWidth = 995
   LCLVersion = '4.4.0.0'
@@ -110,19 +110,19 @@ object Form1: TForm1
     Height = 548
     Top = 0
     Width = 864
-    ActivePage = TabSheet1
+    ActivePage = TabSheet4
     Anchors = [akTop, akLeft, akRight, akBottom]
     ShowTabs = False
-    TabIndex = 0
+    TabIndex = 3
     TabOrder = 1
     object TabSheet1: TTabSheet
       Caption = 'PLC IP'
       ClientHeight = 540
       ClientWidth = 856
       object Button1: TButton
-        Left = 240
-        Height = 49
-        Top = 12
+        Left = 232
+        Height = 58
+        Top = 8
         Width = 116
         Caption = 'Connect'
         TabOrder = 0
@@ -130,35 +130,144 @@ object Form1: TForm1
       end
       object Label1: TLabel
         Left = 11
-        Height = 15
+        Height = 20
         Top = 13
-        Width = 77
+        Width = 94
         Caption = 'PLC IP address'
+        Font.CharSet = ANSI_CHARSET
+        Font.Height = -15
+        Font.Pitch = fpVariable
+        Font.Quality = fqDraft
+        ParentFont = False
       end
       object Label2: TLabel
         Left = 11
-        Height = 15
+        Height = 20
         Top = 39
-        Width = 46
+        Width = 53
         Caption = 'PLC Port'
+        Font.CharSet = ANSI_CHARSET
+        Font.Height = -15
+        Font.Pitch = fpVariable
+        Font.Quality = fqDraft
+        ParentFont = False
       end
       object Edit1: TEdit
-        Left = 104
-        Height = 23
+        Left = 112
+        Height = 28
         Top = 8
-        Width = 80
+        Width = 112
+        Alignment = taCenter
+        Font.CharSet = ANSI_CHARSET
+        Font.Height = -15
+        Font.Pitch = fpVariable
+        Font.Quality = fqDraft
+        ParentFont = False
         TabOrder = 1
         Text = '192.168.54.21'
         OnEditingDone = Edit1EditingDone
       end
       object Edit2: TEdit
-        Left = 104
-        Height = 23
+        Left = 112
+        Height = 28
         Top = 38
-        Width = 80
+        Width = 112
+        Alignment = taCenter
+        Font.CharSet = ANSI_CHARSET
+        Font.Height = -15
+        Font.Pitch = fpVariable
+        Font.Quality = fqDraft
+        ParentFont = False
         TabOrder = 2
         Text = '102'
         OnEditingDone = Edit2EditingDone
+      end
+      object ButtonPing: TButton
+        Left = 504
+        Height = 28
+        Top = 64
+        Width = 95
+        Caption = 'Ping'
+        TabOrder = 3
+        OnClick = ButtonPingClick
+      end
+      object Edit5: TEdit
+        Left = 608
+        Height = 28
+        Top = 64
+        Width = 115
+        Alignment = taCenter
+        Font.CharSet = ANSI_CHARSET
+        Font.Height = -15
+        Font.Pitch = fpVariable
+        Font.Quality = fqDraft
+        ParentFont = False
+        TabOrder = 4
+        Text = '192.168.0.2'
+        OnEditingDone = Edit5EditingDone
+      end
+      object ButtonIpconfig: TButton
+        Left = 504
+        Height = 28
+        Top = 96
+        Width = 95
+        Caption = 'ipconfig'
+        TabOrder = 5
+        OnClick = ButtonIpconfigClick
+      end
+      object ButtonComputerName: TButton
+        Left = 608
+        Height = 28
+        Top = 96
+        Width = 115
+        Caption = 'Computer Name'
+        TabOrder = 6
+        OnClick = ButtonComputerNameClick
+      end
+      object ButtonIpconfigAl: TButton
+        Left = 504
+        Height = 28
+        Top = 129
+        Width = 95
+        Caption = 'ipconfig /all'
+        TabOrder = 7
+        OnClick = ButtonIpconfigAlClick
+      end
+      object ButtonGetIPAddress: TButton
+        Left = 608
+        Height = 28
+        Top = 128
+        Width = 115
+        Caption = 'Get IP address'
+        TabOrder = 8
+        OnClick = ButtonGetIPAddressClick
+      end
+      object Memo2: TMemo
+        AnchorSideLeft.Control = TabSheet1
+        AnchorSideTop.Control = ButtonIpconfigAl
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = TabSheet1
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = TabSheet1
+        AnchorSideBottom.Side = asrBottom
+        Left = 0
+        Height = 376
+        Top = 164
+        Width = 856
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Top = 7
+        ReadOnly = True
+        ScrollBars = ssAutoBoth
+        TabOrder = 9
+      end
+      object ButtonClear: TButton
+        Left = 728
+        Height = 28
+        Top = 129
+        Width = 115
+        Caption = 'Clear'
+        TabOrder = 10
+        OnClick = ButtonClearClick
       end
     end
     object TabSheet2: TTabSheet
@@ -3361,7 +3470,7 @@ object Form1: TForm1
         Left = 536
         Height = 25
         Top = 512
-        Width = 118
+        Width = 123
         Caption = 'Run/Stop Chart'
         TabOrder = 19
         OnClick = Button4Click
