@@ -3,9 +3,11 @@ object Form1: TForm1
   Height = 571
   Top = 127
   Width = 995
-  Caption = 'SlitterMonitoring01 29042026'
+  BorderStyle = bsSingle
+  Caption = 'SlitterMonitoring01 05052026'
   ClientHeight = 571
   ClientWidth = 995
+  Position = poWorkAreaCenter
   LCLVersion = '4.4.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
