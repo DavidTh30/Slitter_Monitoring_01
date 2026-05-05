@@ -1663,12 +1663,15 @@ begin
       if (CurrentSource1[i]>ChartMax) then ChartMax:=CurrentSource1[i];
     end;
 
-    if (ChartMin>0) then
-      ChartMin:=0
-    else
-      ChartMin:=ChartMin-3;
+    for i:=0 to TotalPointerX-1 do
+    begin
+      if (CurrentSource2[i]<ChartMin) then ChartMin:=CurrentSource2[i];
+      if (CurrentSource2[i]>ChartMax) then ChartMax:=CurrentSource2[i];
+    end;
 
-    ChartMax:=ChartMax+3;
+    ChartMin:=ChartMin-1;
+
+    ChartMax:=ChartMax+1;
 
     Chart6.Extent.YMin:=ChartMin;
     Chart6.Extent.YMax:=ChartMax;

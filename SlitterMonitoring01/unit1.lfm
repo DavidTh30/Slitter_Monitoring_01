@@ -112,10 +112,10 @@ object Form1: TForm1
     Height = 548
     Top = 0
     Width = 864
-    ActivePage = TabSheet4
+    ActivePage = TabSheet3
     Anchors = [akTop, akLeft, akRight, akBottom]
     ShowTabs = False
-    TabIndex = 3
+    TabIndex = 2
     TabOrder = 1
     object TabSheet1: TTabSheet
       Caption = 'PLC IP'
