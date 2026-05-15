@@ -112,10 +112,10 @@ object Form1: TForm1
     Height = 551
     Top = 0
     Width = 864
-    ActivePage = TabSheet4
+    ActivePage = TabSheet3
     Anchors = [akTop, akLeft, akRight, akBottom]
     ShowTabs = False
-    TabIndex = 3
+    TabIndex = 2
     TabOrder = 1
     object TabSheet1: TTabSheet
       Caption = 'PLC IP'
@@ -2097,7 +2097,7 @@ object Form1: TForm1
       object ComboBox7: TComboBox
         Left = 73
         Height = 21
-        Top = 489
+        Top = 488
         Width = 72
         ItemHeight = 13
         ItemIndex = 3
@@ -2143,7 +2143,7 @@ object Form1: TForm1
       object ComboBox8: TComboBox
         Left = 153
         Height = 21
-        Top = 489
+        Top = 488
         Width = 120
         ItemHeight = 13
         ItemIndex = 3

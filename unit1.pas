@@ -1771,7 +1771,7 @@ begin
   ChartSimulate:=true;
   if ChartSimulate then Ra1:= DB1XX_DBWXX_Source1.Value; //Int(Random(1*1000));
   if ChartSimulate then Ra2:= DB1XX_DBWXX_Source2.Value; //Int(Random(1*1000));
-  if ChartSimulate then Ra3:= DB1XX_DBWXX_Source2.Value; //Int(Random(1*1000));
+  if ChartSimulate then Ra3:= DB1XX_DBWXX_Source3.Value; //Int(Random(1*1000));
 
   if ChartForceManual.Extent.YMax < Ra1+2 then
   begin
@@ -1785,6 +1785,36 @@ begin
     if CheckBox1.Checked then ChartForceManual.Extent.YMin := Ra1-1;
     if CheckBox1.Checked then ChartForceManual.ExtentSizeLimit.YMin:= Ra1-1;
     ChartForceManualMin:=Ra1-1;
+    if CheckBox1.Checked then Edit4.Text:=ChartForceManual.Extent.YMin.ToString;
+  end;
+
+  if ChartForceManual.Extent.YMax < Ra2+2 then
+  begin
+    if CheckBox1.Checked then ChartForceManual.Extent.YMax := Ra2+2;
+    if CheckBox1.Checked then ChartForceManual.ExtentSizeLimit.YMax:= Ra2+2;
+    ChartForceManualMax:=Ra2+2;
+    if CheckBox1.Checked then Edit3.Text:=ChartForceManual.Extent.YMax.ToString;
+  end;
+  if ChartForceManual.Extent.YMin > Ra2-1 then
+  begin
+    if CheckBox1.Checked then ChartForceManual.Extent.YMin := Ra2-1;
+    if CheckBox1.Checked then ChartForceManual.ExtentSizeLimit.YMin:= Ra2-1;
+    ChartForceManualMin:=Ra2-1;
+    if CheckBox1.Checked then Edit4.Text:=ChartForceManual.Extent.YMin.ToString;
+  end;
+
+  if ChartForceManual.Extent.YMax < Ra3+2 then
+  begin
+    if CheckBox1.Checked then ChartForceManual.Extent.YMax := Ra3+2;
+    if CheckBox1.Checked then ChartForceManual.ExtentSizeLimit.YMax:= Ra3+2;
+    ChartForceManualMax:=Ra3+2;
+    if CheckBox1.Checked then Edit3.Text:=ChartForceManual.Extent.YMax.ToString;
+  end;
+  if ChartForceManual.Extent.YMin > Ra3-1 then
+  begin
+    if CheckBox1.Checked then ChartForceManual.Extent.YMin := Ra3-1;
+    if CheckBox1.Checked then ChartForceManual.ExtentSizeLimit.YMin:= Ra3-1;
+    ChartForceManualMin:=Ra3-1;
     if CheckBox1.Checked then Edit4.Text:=ChartForceManual.Extent.YMin.ToString;
   end;
 
