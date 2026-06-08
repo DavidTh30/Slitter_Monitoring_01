@@ -5,11 +5,11 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls, StdCtrls,
+  Classes, SysUtils, Forms, Controls, Dialogs, ComCtrls, StdCtrls,
   ExtCtrls, Menus, ECAccordion, ECEditBtns, ECSwitch, tcp_udpport,
   ISOTCPDriver, PLCBlock, PLCBlockElement, TagBit, HMIEdit, strutils,
   TAGraph, TASources, TASeries, TATransformations, Math, windows, TAChartUtils,
-  Process, WinSock, JwaIpHlpAPI, JwaIpRtrMib;
+  Process, WinSock, JwaIpHlpAPI, JwaIpRtrMib, Graphics;
 
 function DwmGetWindowAttribute(hwnd: HWND; dwAttribute: DWORD; pvAttribute: PVOID; cbAttribute: DWORD): HRESULT; stdcall; external 'dwmapi.dll';
 
@@ -238,6 +238,7 @@ type
     HMIEdit8: THMIEdit;
     HMIEdit9: THMIEdit;
     Image2: TImage;
+    Image3: TImage;
     ISOTCPDriver1: TISOTCPDriver;
     Label1: TLabel;
     Label10: TLabel;
@@ -399,14 +400,14 @@ var
   dc: HDC;
 begin
   result := 0; // 0 = success
-  if not IsWindow(window) then exit(1);
-  if not (DwmGetWindowAttribute(window, 9{DWMWA_EXTENDED_FRAME_BOUNDS}, @outer, sizeof(outer)) = S_OK) then exit(2);
+  if not IsWindow(window) then begin memo1.Append('Not windows'); exit(1); end;
+  if not (DwmGetWindowAttribute(window, 9{DWMWA_EXTENDED_FRAME_BOUNDS}, @outer, sizeof(outer)) = S_OK) then begin memo1.Append('Can not get window attribute'); exit(2); end;
   bmp.Width := outer.Width;
   bmp.Height := outer.Height;
   bmp.PixelFormat := pf24bit;
   dc := GetDC(GetDesktopWindow);
   bmp.BeginUpdate(true);
-  if not BitBlt(bmp.Canvas.Handle, 0, 0, outer.Width, outer.Height, dc, outer.Left, outer.Top, SRCCOPY) then result := 3;
+  if not BitBlt(bmp.Canvas.Handle, 0, 0, outer.Width, outer.Height, dc, outer.Left, outer.Top, SRCCOPY) then begin memo1.Append('Can not copy photo'); result := 3; end;
   bmp.EndUpdate(true);
   bmp.Canvas.Changed;
   ReleaseDC(GetDesktopWindow, dc);
@@ -434,11 +435,11 @@ begin
   end;
   // prepare the bitmap
   BMP := Graphics.TBitmap.Create;
-  BMP.Width  := W;
-  BMP.Height := H;
+  BMP.Width  := Form1.Width;//BMP.Width  := W;
+  BMP.Height  := Form1.Height; //BMP.Height := H;
   BMP.Canvas.Brush.Color := clWhite;
   BMP.Canvas.FillRect(0, 0, W, H);
-  ScreenDC := GetDC(GetDesktopWindow);
+  ScreenDC := GetDC(Form1.Handle); ////ScreenDC := GetDC(GetDesktopWindow);
   // copy the required area:
   BitBlt(BMP.Canvas.Handle, 0, 0, W, H, ScreenDC, X0, Y0, SRCCOPY);
   ReleaseDC(0, ScreenDC);
@@ -1078,15 +1079,15 @@ procedure TForm1.ComboBox3EditingDone(Sender: TObject);
 var
   i:integer;
 begin
-  if (ComboBox3.Caption='1L') or (ComboBox3.Caption='1R') then DB1XX_SourceRecord1.MemFile_DB:=101;
-  if (ComboBox3.Caption='2L') or (ComboBox3.Caption='2R') then DB1XX_SourceRecord1.MemFile_DB:=102;
-  if (ComboBox3.Caption='3L') or (ComboBox3.Caption='3R') then DB1XX_SourceRecord1.MemFile_DB:=103;
-  if (ComboBox3.Caption='4L') or (ComboBox3.Caption='4R') then DB1XX_SourceRecord1.MemFile_DB:=104;
-  if (ComboBox3.Caption='5L') or (ComboBox3.Caption='5R') then DB1XX_SourceRecord1.MemFile_DB:=105;
-  if (ComboBox3.Caption='6L') or (ComboBox3.Caption='6R') then DB1XX_SourceRecord1.MemFile_DB:=106;
-  if (ComboBox3.Caption='7L') or (ComboBox3.Caption='7R') then DB1XX_SourceRecord1.MemFile_DB:=107;
-  if (ComboBox3.Caption='8L') or (ComboBox3.Caption='8R') then DB1XX_SourceRecord1.MemFile_DB:=108;
-  if (ComboBox3.Caption='9L') or (ComboBox3.Caption='9R') then DB1XX_SourceRecord1.MemFile_DB:=109;
+  if (ComboBox3.Caption='1 L') or (ComboBox3.Caption='1 R') then DB1XX_SourceRecord1.MemFile_DB:=101;
+  if (ComboBox3.Caption='2 L') or (ComboBox3.Caption='2 R') then DB1XX_SourceRecord1.MemFile_DB:=102;
+  if (ComboBox3.Caption='3 L') or (ComboBox3.Caption='3 R') then DB1XX_SourceRecord1.MemFile_DB:=103;
+  if (ComboBox3.Caption='4 L') or (ComboBox3.Caption='4 R') then DB1XX_SourceRecord1.MemFile_DB:=104;
+  if (ComboBox3.Caption='5 L') or (ComboBox3.Caption='5 R') then DB1XX_SourceRecord1.MemFile_DB:=105;
+  if (ComboBox3.Caption='6 L') or (ComboBox3.Caption='6 R') then DB1XX_SourceRecord1.MemFile_DB:=106;
+  if (ComboBox3.Caption='7 L') or (ComboBox3.Caption='7 R') then DB1XX_SourceRecord1.MemFile_DB:=107;
+  if (ComboBox3.Caption='8 L') or (ComboBox3.Caption='8 R') then DB1XX_SourceRecord1.MemFile_DB:=108;
+  if (ComboBox3.Caption='9 L') or (ComboBox3.Caption='9 R') then DB1XX_SourceRecord1.MemFile_DB:=109;
   if (ComboBox3.Caption='10L') or (ComboBox3.Caption='10R') then DB1XX_SourceRecord1.MemFile_DB:=110;
   if (ComboBox3.Caption='11L') or (ComboBox3.Caption='11R') then DB1XX_SourceRecord1.MemFile_DB:=111;
   if (ComboBox3.Caption='12L') or (ComboBox3.Caption='12R') then DB1XX_SourceRecord1.MemFile_DB:=112;
@@ -1097,17 +1098,20 @@ begin
 
   i:=pos('L',ComboBox3.Caption);
 
-  if (i>0) and (ComboBox4.Caption='Speed Setpoint') then DB1XX_SourceRecord1.MemAddress :=310;
-  if (i>0) and (ComboBox4.Caption='Speed Actual') then DB1XX_SourceRecord1.MemAddress:=320;
-  if (i>0) and (ComboBox4.Caption='Torque Setpoint') then DB1XX_SourceRecord1.MemAddress:=312;
-  if (i>0) and (ComboBox4.Caption='Torque Actual') then DB1XX_SourceRecord1.MemAddress:=322;
+  if (i>0) and (ComboBox4.Caption='Speed Setpoint') then begin DB1XX_SourceRecord1.MemAddress :=310; end;
+  if (i>0) and (ComboBox4.Caption='Speed Actual') then begin DB1XX_SourceRecord1.MemAddress:=320; end;
+  if (i>0) and (ComboBox4.Caption='Torque Setpoint') then begin DB1XX_SourceRecord1.MemAddress:=312; end;
+  if (i>0) and (ComboBox4.Caption='Torque Actual') then begin DB1XX_SourceRecord1.MemAddress:=322; end;
 
   i:=pos('R',ComboBox3.Caption);
 
-  if (i>0) and (ComboBox4.Caption='Speed Setpoint') then DB1XX_SourceRecord1.MemAddress :=332;
-  if (i>0) and (ComboBox4.Caption='Speed Actual') then DB1XX_SourceRecord1.MemAddress:=342;
-  if (i>0) and (ComboBox4.Caption='Torque Setpoint') then DB1XX_SourceRecord1.MemAddress:=334;
-  if (i>0) and (ComboBox4.Caption='Torque Actual') then DB1XX_SourceRecord1.MemAddress:=344;
+  if (i>0) and (ComboBox4.Caption='Speed Setpoint') then begin DB1XX_SourceRecord1.MemAddress :=332; end;
+  if (i>0) and (ComboBox4.Caption='Speed Actual') then begin DB1XX_SourceRecord1.MemAddress:=342; end;
+  if (i>0) and (ComboBox4.Caption='Torque Setpoint') then begin DB1XX_SourceRecord1.MemAddress:=334; end;
+  if (i>0) and (ComboBox4.Caption='Torque Actual') then begin DB1XX_SourceRecord1.MemAddress:=344; end;
+
+  memo1.Append('(1)MemFile_DB:'+DB1XX_SourceRecord1.MemFile_DB.ToString);
+  memo1.Append('(1)MemAddress:'+DB1XX_SourceRecord1.MemAddress.ToString);
 end;
 
 procedure TForm1.ComboBox4EditingDone(Sender: TObject);
@@ -1119,15 +1123,15 @@ procedure TForm1.ComboBox5EditingDone(Sender: TObject);
 var
   i:integer;
 begin
-  if (ComboBox5.Caption='1L') or (ComboBox5.Caption='1R') then DB1XX_SourceRecord2.MemFile_DB:=101;
-  if (ComboBox5.Caption='2L') or (ComboBox5.Caption='2R') then DB1XX_SourceRecord2.MemFile_DB:=102;
-  if (ComboBox5.Caption='3L') or (ComboBox5.Caption='3R') then DB1XX_SourceRecord2.MemFile_DB:=103;
-  if (ComboBox5.Caption='4L') or (ComboBox5.Caption='4R') then DB1XX_SourceRecord2.MemFile_DB:=104;
-  if (ComboBox5.Caption='5L') or (ComboBox5.Caption='5R') then DB1XX_SourceRecord2.MemFile_DB:=105;
-  if (ComboBox5.Caption='6L') or (ComboBox5.Caption='6R') then DB1XX_SourceRecord2.MemFile_DB:=106;
-  if (ComboBox5.Caption='7L') or (ComboBox5.Caption='7R') then DB1XX_SourceRecord2.MemFile_DB:=107;
-  if (ComboBox5.Caption='8L') or (ComboBox5.Caption='8R') then DB1XX_SourceRecord2.MemFile_DB:=108;
-  if (ComboBox5.Caption='9L') or (ComboBox5.Caption='9R') then DB1XX_SourceRecord2.MemFile_DB:=109;
+  if (ComboBox5.Caption='1 L') or (ComboBox5.Caption='1 R') then DB1XX_SourceRecord2.MemFile_DB:=101;
+  if (ComboBox5.Caption='2 L') or (ComboBox5.Caption='2 R') then DB1XX_SourceRecord2.MemFile_DB:=102;
+  if (ComboBox5.Caption='3 L') or (ComboBox5.Caption='3 R') then DB1XX_SourceRecord2.MemFile_DB:=103;
+  if (ComboBox5.Caption='4 L') or (ComboBox5.Caption='4 R') then DB1XX_SourceRecord2.MemFile_DB:=104;
+  if (ComboBox5.Caption='5 L') or (ComboBox5.Caption='5 R') then DB1XX_SourceRecord2.MemFile_DB:=105;
+  if (ComboBox5.Caption='6 L') or (ComboBox5.Caption='6 R') then DB1XX_SourceRecord2.MemFile_DB:=106;
+  if (ComboBox5.Caption='7 L') or (ComboBox5.Caption='7 R') then DB1XX_SourceRecord2.MemFile_DB:=107;
+  if (ComboBox5.Caption='8 L') or (ComboBox5.Caption='8 R') then DB1XX_SourceRecord2.MemFile_DB:=108;
+  if (ComboBox5.Caption='9 L') or (ComboBox5.Caption='9 R') then DB1XX_SourceRecord2.MemFile_DB:=109;
   if (ComboBox5.Caption='10L') or (ComboBox5.Caption='10R') then DB1XX_SourceRecord2.MemFile_DB:=110;
   if (ComboBox5.Caption='11L') or (ComboBox5.Caption='11R') then DB1XX_SourceRecord2.MemFile_DB:=111;
   if (ComboBox5.Caption='12L') or (ComboBox5.Caption='12R') then DB1XX_SourceRecord2.MemFile_DB:=112;
@@ -1150,6 +1154,8 @@ begin
   if (i>0) and (ComboBox6.Caption='Torque Setpoint') then DB1XX_SourceRecord2.MemAddress:=334;
   if (i>0) and (ComboBox6.Caption='Torque Actual') then DB1XX_SourceRecord2.MemAddress:=344;
 
+  memo1.Append('(2)MemFile_DB:'+DB1XX_SourceRecord2.MemFile_DB.ToString);
+  memo1.Append('(2)MemAddress:'+DB1XX_SourceRecord2.MemAddress.ToString);
 end;
 
 procedure TForm1.ComboBox6EditingDone(Sender: TObject);
@@ -1161,15 +1167,15 @@ procedure TForm1.ComboBox7EditingDone(Sender: TObject);
 var
   i:integer;
 begin
-  if (ComboBox7.Caption='1L') or (ComboBox7.Caption='1R') then DB1XX_SourceRecord3.MemFile_DB:=101;
-  if (ComboBox7.Caption='2L') or (ComboBox7.Caption='2R') then DB1XX_SourceRecord3.MemFile_DB:=102;
-  if (ComboBox7.Caption='3L') or (ComboBox7.Caption='3R') then DB1XX_SourceRecord3.MemFile_DB:=103;
-  if (ComboBox7.Caption='4L') or (ComboBox7.Caption='4R') then DB1XX_SourceRecord3.MemFile_DB:=104;
-  if (ComboBox7.Caption='5L') or (ComboBox7.Caption='5R') then DB1XX_SourceRecord3.MemFile_DB:=105;
-  if (ComboBox7.Caption='6L') or (ComboBox7.Caption='6R') then DB1XX_SourceRecord3.MemFile_DB:=106;
-  if (ComboBox7.Caption='7L') or (ComboBox7.Caption='7R') then DB1XX_SourceRecord3.MemFile_DB:=107;
-  if (ComboBox7.Caption='8L') or (ComboBox7.Caption='8R') then DB1XX_SourceRecord3.MemFile_DB:=108;
-  if (ComboBox7.Caption='9L') or (ComboBox7.Caption='9R') then DB1XX_SourceRecord3.MemFile_DB:=109;
+  if (ComboBox7.Caption='1 L') or (ComboBox7.Caption='1 R') then DB1XX_SourceRecord3.MemFile_DB:=101;
+  if (ComboBox7.Caption='2 L') or (ComboBox7.Caption='2 R') then DB1XX_SourceRecord3.MemFile_DB:=102;
+  if (ComboBox7.Caption='3 L') or (ComboBox7.Caption='3 R') then DB1XX_SourceRecord3.MemFile_DB:=103;
+  if (ComboBox7.Caption='4 L') or (ComboBox7.Caption='4 R') then DB1XX_SourceRecord3.MemFile_DB:=104;
+  if (ComboBox7.Caption='5 L') or (ComboBox7.Caption='5 R') then DB1XX_SourceRecord3.MemFile_DB:=105;
+  if (ComboBox7.Caption='6 L') or (ComboBox7.Caption='6 R') then DB1XX_SourceRecord3.MemFile_DB:=106;
+  if (ComboBox7.Caption='7 L') or (ComboBox7.Caption='7 R') then DB1XX_SourceRecord3.MemFile_DB:=107;
+  if (ComboBox7.Caption='8 L') or (ComboBox7.Caption='8 R') then DB1XX_SourceRecord3.MemFile_DB:=108;
+  if (ComboBox7.Caption='9 L') or (ComboBox7.Caption='9 R') then DB1XX_SourceRecord3.MemFile_DB:=109;
   if (ComboBox7.Caption='10L') or (ComboBox7.Caption='10R') then DB1XX_SourceRecord3.MemFile_DB:=110;
   if (ComboBox7.Caption='11L') or (ComboBox7.Caption='11R') then DB1XX_SourceRecord3.MemFile_DB:=111;
   if (ComboBox7.Caption='12L') or (ComboBox7.Caption='12R') then DB1XX_SourceRecord3.MemFile_DB:=112;
@@ -1191,6 +1197,9 @@ begin
   if (i>0) and (ComboBox8.Caption='Speed Actual') then DB1XX_SourceRecord3.MemAddress:=342;
   if (i>0) and (ComboBox8.Caption='Torque Setpoint') then DB1XX_SourceRecord3.MemAddress:=334;
   if (i>0) and (ComboBox8.Caption='Torque Actual') then DB1XX_SourceRecord3.MemAddress:=344;
+
+  memo1.Append('(3)MemFile_DB:'+DB1XX_SourceRecord3.MemFile_DB.ToString);
+  memo1.Append('(3)MemAddress:'+DB1XX_SourceRecord3.MemAddress.ToString);
 end;
 
 procedure TForm1.ComboBox8EditingDone(Sender: TObject);
@@ -1525,10 +1534,12 @@ end;
 
 procedure TForm1.Image2Click(Sender: TObject);
 var
-  bmp: graphics.TBitmap;
+  //bmp: graphics.TBitmap;
+  bmp: TBitmap;
   i:integer;
   FileName_:string;
   Directory__:string;
+  SourceRect, DestRect: TRect;
 begin
   if (FormatDateTime('MM YYYY',Now)<>Directory__) then
   begin
@@ -1537,24 +1548,38 @@ begin
   if CheckDirectory(Directory__,Memo1) then begin showmessage('Unable to save file'); Exit; end;
 
   try
-    bmp := graphics.TBitmap.Create;
+    //bmp := graphics.TBitmap.Create;
+    bmp := TBitmap.Create;
     for i:=1 to 1000 do
     begin
       Application.ProcessMessages
     end;
-    if get_ss_of(Form1.Handle, bmp) = 0 then
+  if get_ss_of(Form1.Handle, bmp) = 0 then
     begin
       // display on TImage
       //image1.Picture.Assign(bmp);
       // or save to file
+      memo1.Append('Get photo from Form1.Handle done');
       FileName_:= Directory__+'\'+FormatDateTime('DD MM YYYY hh nn ss',Now)+'.bmp';
       bmp.SaveToFile(FileName_);
+      showmessage(FileName_);
+    end
+    else
+    begin
+      bmp.SetSize(Screen.Width, Screen.Height);
+      //SourceRect:=Rect(0, 0, Screen.Width, Screen.Height);
+      //DestRect:=Rect(0, 0, Screen.Width, Screen.Height);
+      //bmp.Canvas.CopyRect( SourceRect, GetDC(0), DestRect);
+      //memo1.Append('Get photo from Canvas');
+      FileName_:= Directory__+'\'+FormatDateTime('DD MM YYYY hh nn ss',Now)+'.bmp';
+      ScreenshotToFile(FileName_,0);
+      //bmp.SaveToFile(FileName_);
       showmessage(FileName_);
     end;
   finally
     bmp.Free;
   end;
-  //ScreenshotToFile('123.bmp',0);
+
 end;
 
 procedure TForm1.Label_Source8Click(Sender: TObject);
