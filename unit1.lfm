@@ -112,10 +112,10 @@ object Form1: TForm1
     Height = 551
     Top = 0
     Width = 864
-    ActivePage = TabSheet3
+    ActivePage = TabSheet4
     Anchors = [akTop, akLeft, akRight, akBottom]
     ShowTabs = False
-    TabIndex = 2
+    TabIndex = 3
     TabOrder = 1
     object TabSheet1: TTabSheet
       Caption = 'PLC IP'
@@ -2986,6 +2986,7 @@ object Form1: TForm1
       object ComboBox3: TComboBox
         Left = 73
         Height = 21
+        Hint = 'DB101.DBD322'
         Top = 433
         Width = 72
         ItemHeight = 13
@@ -3024,7 +3025,9 @@ object Form1: TForm1
           '16L'
           '16R'
         )
+        ParentShowHint = False
         ReadOnly = True
+        ShowHint = True
         TabOrder = 0
         Text = '1 L'
         OnEditingDone = ComboBox3EditingDone
@@ -3032,6 +3035,7 @@ object Form1: TForm1
       object ComboBox4: TComboBox
         Left = 153
         Height = 21
+        Hint = 'DB101.DBD322'
         Top = 433
         Width = 120
         ItemHeight = 13
@@ -3042,7 +3046,9 @@ object Form1: TForm1
           'Torque Setpoint'
           'Torque Actual'
         )
+        ParentShowHint = False
         ReadOnly = True
+        ShowHint = True
         TabOrder = 1
         Text = 'Torque Actual'
         OnEditingDone = ComboBox4EditingDone
@@ -3061,13 +3067,16 @@ object Form1: TForm1
       object HMIEdit61: THMIEdit
         Left = 281
         Height = 21
+        Hint = 'DB101.DBD322'
         Top = 432
         Width = 64
         Color = clWindow
         Enabled = True
         Font.Color = clWindowText
         ParentFont = False
+        ParentShowHint = False
         ReadOnly = True
+        ShowHint = True
         TabStop = False
         TabOrder = 3
         NumberFormat = '#0.00000'
@@ -3090,6 +3099,7 @@ object Form1: TForm1
       object ComboBox5: TComboBox
         Left = 73
         Height = 21
+        Hint = 'DB102.DBD322'
         Top = 461
         Width = 72
         ItemHeight = 13
@@ -3128,7 +3138,9 @@ object Form1: TForm1
           '16L'
           '16R'
         )
+        ParentShowHint = False
         ReadOnly = True
+        ShowHint = True
         TabOrder = 5
         Text = '2 L'
         OnEditingDone = ComboBox5EditingDone
@@ -3136,6 +3148,7 @@ object Form1: TForm1
       object ComboBox6: TComboBox
         Left = 153
         Height = 21
+        Hint = 'DB102.DBD322'
         Top = 461
         Width = 120
         ItemHeight = 13
@@ -3146,7 +3159,9 @@ object Form1: TForm1
           'Torque Setpoint'
           'Torque Actual'
         )
+        ParentShowHint = False
         ReadOnly = True
+        ShowHint = True
         TabOrder = 6
         Text = 'Torque Actual'
         OnEditingDone = ComboBox6EditingDone
@@ -3154,13 +3169,16 @@ object Form1: TForm1
       object HMIEdit62: THMIEdit
         Left = 281
         Height = 21
+        Hint = 'DB102.DBD322'
         Top = 461
         Width = 64
         Color = clWindow
         Enabled = True
         Font.Color = clWindowText
         ParentFont = False
+        ParentShowHint = False
         ReadOnly = True
+        ShowHint = True
         TabStop = False
         TabOrder = 7
         NumberFormat = '#0.00000'
@@ -3183,6 +3201,7 @@ object Form1: TForm1
       object ComboBox7: TComboBox
         Left = 73
         Height = 21
+        Hint = 'DB102.DBD344'
         Top = 488
         Width = 72
         ItemHeight = 13
@@ -3221,7 +3240,9 @@ object Form1: TForm1
           '16L'
           '16R'
         )
+        ParentShowHint = False
         ReadOnly = True
+        ShowHint = True
         TabOrder = 9
         Text = '2 R'
         OnEditingDone = ComboBox7EditingDone
@@ -3229,6 +3250,7 @@ object Form1: TForm1
       object ComboBox8: TComboBox
         Left = 153
         Height = 21
+        Hint = 'DB102.DBD344'
         Top = 488
         Width = 120
         ItemHeight = 13
@@ -3239,7 +3261,9 @@ object Form1: TForm1
           'Torque Setpoint'
           'Torque Actual'
         )
+        ParentShowHint = False
         ReadOnly = True
+        ShowHint = True
         TabOrder = 10
         Text = 'Torque Actual'
         OnEditingDone = ComboBox8EditingDone
@@ -3247,13 +3271,16 @@ object Form1: TForm1
       object HMIEdit63: THMIEdit
         Left = 281
         Height = 21
+        Hint = 'DB102.DBD344'
         Top = 489
         Width = 64
         Color = clWindow
         Enabled = True
         Font.Color = clWindowText
         ParentFont = False
+        ParentShowHint = False
         ReadOnly = True
+        ShowHint = True
         TabStop = False
         TabOrder = 11
         NumberFormat = '#0.00000'

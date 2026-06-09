@@ -1110,6 +1110,9 @@ begin
   if (i>0) and (ComboBox4.Caption='Torque Setpoint') then begin DB1XX_SourceRecord1.MemAddress:=334; end;
   if (i>0) and (ComboBox4.Caption='Torque Actual') then begin DB1XX_SourceRecord1.MemAddress:=344; end;
 
+  ComboBox3.Hint:='DB'+DB1XX_SourceRecord1.MemFile_DB.ToString+'.DBD'+DB1XX_SourceRecord1.MemAddress.ToString;
+  ComboBox4.Hint:='DB'+DB1XX_SourceRecord1.MemFile_DB.ToString+'.DBD'+DB1XX_SourceRecord1.MemAddress.ToString;
+  HMIEdit61.Hint:='DB'+DB1XX_SourceRecord1.MemFile_DB.ToString+'.DBD'+DB1XX_SourceRecord1.MemAddress.ToString;
   memo1.Append('(1)MemFile_DB:'+DB1XX_SourceRecord1.MemFile_DB.ToString);
   memo1.Append('(1)MemAddress:'+DB1XX_SourceRecord1.MemAddress.ToString);
 end;
@@ -1154,6 +1157,10 @@ begin
   if (i>0) and (ComboBox6.Caption='Torque Setpoint') then DB1XX_SourceRecord2.MemAddress:=334;
   if (i>0) and (ComboBox6.Caption='Torque Actual') then DB1XX_SourceRecord2.MemAddress:=344;
 
+  ComboBox5.Hint:='DB'+DB1XX_SourceRecord2.MemFile_DB.ToString+'.DBD'+DB1XX_SourceRecord2.MemAddress.ToString;
+  ComboBox6.Hint:='DB'+DB1XX_SourceRecord2.MemFile_DB.ToString+'.DBD'+DB1XX_SourceRecord2.MemAddress.ToString;
+  HMIEdit62.Hint:='DB'+DB1XX_SourceRecord2.MemFile_DB.ToString+'.DBD'+DB1XX_SourceRecord2.MemAddress.ToString;
+
   memo1.Append('(2)MemFile_DB:'+DB1XX_SourceRecord2.MemFile_DB.ToString);
   memo1.Append('(2)MemAddress:'+DB1XX_SourceRecord2.MemAddress.ToString);
 end;
@@ -1197,6 +1204,10 @@ begin
   if (i>0) and (ComboBox8.Caption='Speed Actual') then DB1XX_SourceRecord3.MemAddress:=342;
   if (i>0) and (ComboBox8.Caption='Torque Setpoint') then DB1XX_SourceRecord3.MemAddress:=334;
   if (i>0) and (ComboBox8.Caption='Torque Actual') then DB1XX_SourceRecord3.MemAddress:=344;
+
+  ComboBox7.Hint:='DB'+DB1XX_SourceRecord3.MemFile_DB.ToString+'.DBD'+DB1XX_SourceRecord3.MemAddress.ToString;
+  ComboBox8.Hint:='DB'+DB1XX_SourceRecord3.MemFile_DB.ToString+'.DBD'+DB1XX_SourceRecord3.MemAddress.ToString;
+  HMIEdit63.Hint:='DB'+DB1XX_SourceRecord3.MemFile_DB.ToString+'.DBD'+DB1XX_SourceRecord3.MemAddress.ToString;
 
   memo1.Append('(3)MemFile_DB:'+DB1XX_SourceRecord3.MemFile_DB.ToString);
   memo1.Append('(3)MemAddress:'+DB1XX_SourceRecord3.MemAddress.ToString);
